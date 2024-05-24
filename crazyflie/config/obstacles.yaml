@@ -1,0 +1,6 @@
+obstacles:
+  o1:
+    type: cylinder
+    position: [1.56, 2.39, 0.0]
+    radius: 0.26  #0.22
+    height: 3.00

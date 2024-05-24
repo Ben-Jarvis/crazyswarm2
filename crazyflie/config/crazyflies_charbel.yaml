@@ -1,30 +1,54 @@
 # named list of all robots
 robots:
-  cf01:
+  cf0:
     enabled: true
     uri: radio://0/80/2M/E7E7E7E701
-    initial_position: [3.28, -1.67, 0.07]
+    initial_position: [-3.09, 1.32, 0.07]
     type: cf21
-  cf04:
+  cf1:
     enabled: true
     uri: radio://1/70/2M/E7E7E7E704
-    initial_position: [3.78, -0.95, 0.07]
+    initial_position: [-3.10, 0.42, 0.07]
     type: cf21
-  cf05:
+  cf2:
     enabled: true
     uri: radio://1/70/2M/E7E7E7E705
-    initial_position: [4.63, -0.89, 0.07] 
+    initial_position: [-3.13, -0.47, 0.07] #[4.08, 0.50, 0.07]
     type: cf21
-  cf06:
+  cf3:
     enabled: true
     uri: radio://2/90/2M/E7E7E7E706
-    initial_position: [4.86, -1.79, 0.07]
+    initial_position: [-3.14, -1.37, 0.07]
     type: cf21
-  cf09:
+  cf4: 
     enabled: true
-    uri: radio://3/100/2M/E7E7E7E709
-    initial_position: [4.07, -2.37, 0.07]
+    uri: radio://3/100/2M/E7E7E7E707
+    initial_position: [-2.36, 0.88, 0.07] #[5.32, -0.75, 0.07]
     type: cf21
+  # cf5:
+  #   enabled: true
+  #   uri: radio://0/90/2M/E7E7E7E708
+  #   initial_position: [-2.38, 0.01, 0.07]
+  #   type: cf21
+  # cf6:
+  #   enabled: true
+  #   uri: radio://1/80/2M/E7E7E7E70A
+  #   initial_position: [-2.38, -0.92, 0.07]
+  #   type: cf21
+  # cf11:
+  #   enabled: true
+  #   uri: radio://1/92/2M/E7E7E7E70B
+  #   initial_position: [3.16, -0.195, 0.08]
+  #   type: cf21  # see robot_types
+    # firmware_params:
+    #   kalman:
+    #     pNAcc_xy: 1.0 # default 0.5
+    # firmware_logging:
+    #   enabled: true
+    #   custom_topics:i56   56677777777777777789
+    #     topic_name3: 
+    #       frequency: 1
+    #       vars: ["acc.x", "acc.y"]
 
 # Definition of the various robot types
 robot_types:
@@ -83,10 +107,10 @@ all:
     enabled: true
     default_topics:
      # remove to disable default topic
-      # pose:
-      #   frequency: 10 # Hz
-      odom:
+      pose:
         frequency: 10 # Hz
+      # odom:
+      #   frequency: 10 # Hz
     # custom_topics:
     #  topic_name1:
     #    frequency: 10 # Hz

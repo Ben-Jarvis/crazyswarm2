@@ -6,10 +6,6 @@
         warning_if_rate_outside: [80.0, 120.0]
       communication:
         max_unicast_latency: 10.0 # ms
-        min_unicast_ack_rate: 0.9
-        min_unicast_receive_rate: 0.9 # requires status topic to be enabled
-        min_broadcast_receive_rate: 0.9 # requires status topic to be enabled
-        publish_stats: false
     firmware_params:
       query_all_values_on_connect: False
     # simulation related
@@ -32,7 +28,7 @@
           fps: 1           # frames per second
           cycle_bg: false  # if true, pictures will cycle through different environemt background images (useful for synthetic image generation). Otherwise a single environment background image will be used
           cf_cameras:      # names of crazyflies with cameras on them if enabled in `crazyflies.yaml`
-            cf231:
+            cf04:
               calibration:
                 tvec: [0,0,0]
                 rvec: [1.2092,-1.2092,1.2092]   # 0 deg tilt (cameras looks in front of crazyflie)
@@ -40,4 +36,4 @@
               calibration:
                 tvec: [0,0,0]
                 rvec: [ 0.61394313, -0.61394313,  1.48218982]   # 45 deg tilt
-      controller: mellinger # none, pid, mellinger
+      controller: pid # none, pid, mellinger

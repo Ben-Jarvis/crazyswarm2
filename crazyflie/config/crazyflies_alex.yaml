@@ -83,10 +83,10 @@ all:
     enabled: true
     default_topics:
      # remove to disable default topic
-      # pose:
-      #   frequency: 10 # Hz
-      odom:
+      pose:
         frequency: 10 # Hz
+      # odom:
+      #   frequency: 10 # Hz
     # custom_topics:
     #  topic_name1:
     #    frequency: 10 # Hz
