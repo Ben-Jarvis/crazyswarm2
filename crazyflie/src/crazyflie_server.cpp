@@ -12,7 +12,7 @@
 #include "crazyflie_interfaces/srv/land.hpp"
 #include "crazyflie_interfaces/srv/go_to.hpp"
 #include "crazyflie_interfaces/srv/notify_setpoints_stop.hpp"
-#include "crazyflie_interfaces/srv/arm.hpp"
+//#include "crazyflie_interfaces/srv/arm.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
@@ -35,7 +35,7 @@ using crazyflie_interfaces::srv::Land;
 using crazyflie_interfaces::srv::GoTo;
 using crazyflie_interfaces::srv::UploadTrajectory;
 using crazyflie_interfaces::srv::NotifySetpointsStop;
-using crazyflie_interfaces::srv::Arm;
+// using crazyflie_interfaces::srv::Arm;
 using std_srvs::srv::Empty;
 
 using motion_capture_tracking_interfaces::msg::NamedPoseArray;
@@ -163,7 +163,7 @@ public:
     service_go_to_ = node->create_service<GoTo>(name + "/go_to", std::bind(&CrazyflieROS::go_to, this, _1, _2), service_qos, callback_group_cf_srv);
     service_upload_trajectory_ = node->create_service<UploadTrajectory>(name + "/upload_trajectory", std::bind(&CrazyflieROS::upload_trajectory, this, _1, _2), service_qos, callback_group_cf_srv);
     service_notify_setpoints_stop_ = node->create_service<NotifySetpointsStop>(name + "/notify_setpoints_stop", std::bind(&CrazyflieROS::notify_setpoints_stop, this, _1, _2), service_qos, callback_group_cf_srv);
-    service_arm_ = node->create_service<Arm>(name + "/arm", std::bind(&CrazyflieROS::arm, this, _1, _2), service_qos, callback_group_cf_srv);
+    // service_arm_ = node->create_service<Arm>(name + "/arm", std::bind(&CrazyflieROS::arm, this, _1, _2), service_qos, callback_group_cf_srv);
 
     // Topics
 
@@ -714,15 +714,15 @@ private:
     cf_.notifySetpointsStop(request->remain_valid_millisecs);
   }
 
-  void arm(const std::shared_ptr<Arm::Request> request,
-                         std::shared_ptr<Arm::Response> response)
-  {
-    RCLCPP_INFO(logger_, "[%s] arm(%d)",
-                name_.c_str(),
-                request->arm);
+  // void arm(const std::shared_ptr<Arm::Request> request,
+  //                        std::shared_ptr<Arm::Response> response)
+  // {
+  //   RCLCPP_INFO(logger_, "[%s] arm(%d)",
+  //               name_.c_str(),
+  //               request->arm);
 
-    cf_.sendArmingRequest(request->arm);
-  }
+  //   cf_.sendArmingRequest(request->arm);
+  // }
 
   void on_logging_pose(uint32_t time_in_ms, const logPose* data) {
     if (publisher_pose_) {
@@ -932,7 +932,7 @@ private:
   rclcpp::Service<GoTo>::SharedPtr service_go_to_;
   rclcpp::Service<UploadTrajectory>::SharedPtr service_upload_trajectory_;
   rclcpp::Service<NotifySetpointsStop>::SharedPtr service_notify_setpoints_stop_;
-  rclcpp::Service<Arm>::SharedPtr service_arm_;
+  // rclcpp::Service<Arm>::SharedPtr service_arm_;
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_cmd_vel_legacy_;
   rclcpp::Subscription<crazyflie_interfaces::msg::FullState>::SharedPtr subscription_cmd_full_state_;
@@ -1116,7 +1116,7 @@ public:
     service_land_ = this->create_service<Land>("all/land", std::bind(&CrazyflieServer::land, this, _1, _2), service_qos, callback_group_all_srv_);
     service_go_to_ = this->create_service<GoTo>("all/go_to", std::bind(&CrazyflieServer::go_to, this, _1, _2), service_qos, callback_group_all_srv_);
     service_notify_setpoints_stop_ = this->create_service<NotifySetpointsStop>("all/notify_setpoints_stop", std::bind(&CrazyflieServer::notify_setpoints_stop, this, _1, _2), service_qos, callback_group_all_srv_);
-    service_arm_ = this->create_service<Arm>("all/arm", std::bind(&CrazyflieServer::arm, this, _1, _2), service_qos, callback_group_all_srv_);
+    // service_arm_ = this->create_service<Arm>("all/arm", std::bind(&CrazyflieServer::arm, this, _1, _2), service_qos, callback_group_all_srv_);
 
     // This is the last service to announce and can be used to check if the server is fully available
     service_emergency_ = this->create_service<Empty>("all/emergency", std::bind(&CrazyflieServer::emergency, this, _1, _2), service_qos, callback_group_all_srv_);
@@ -1224,20 +1224,20 @@ private:
     }
   }
 
-  void arm(const std::shared_ptr<Arm::Request> request,
-                         std::shared_ptr<Arm::Response> response)
-  {
-    RCLCPP_INFO(logger_, "[all] arm(%d)",
-                request->arm);
+  // void arm(const std::shared_ptr<Arm::Request> request,
+  //                        std::shared_ptr<Arm::Response> response)
+  // {
+  //   RCLCPP_INFO(logger_, "[all] arm(%d)",
+  //               request->arm);
 
-    for (int i = 0; i < broadcasts_num_repeats_; ++i) {
-      for (auto &bc : broadcaster_) {
-        auto &cfbc = bc.second;
-        cfbc->sendArmingRequest(request->arm);
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(broadcasts_delay_between_repeats_ms_));
-    }
-  }
+  //   for (int i = 0; i < broadcasts_num_repeats_; ++i) {
+  //     for (auto &bc : broadcaster_) {
+  //       auto &cfbc = bc.second;
+  //       cfbc->sendArmingRequest(request->arm);
+  //     }
+  //     std::this_thread::sleep_for(std::chrono::milliseconds(broadcasts_delay_between_repeats_ms_));
+  //   }
+  // }
 
   void cmd_full_state_changed(const crazyflie_interfaces::msg::FullState::SharedPtr msg)
   { 
@@ -1480,7 +1480,7 @@ private:
     rclcpp::Service<Land>::SharedPtr service_land_;
     rclcpp::Service<GoTo>::SharedPtr service_go_to_;
     rclcpp::Service<NotifySetpointsStop>::SharedPtr service_notify_setpoints_stop_;
-    rclcpp::Service<Arm>::SharedPtr service_arm_;
+    // rclcpp::Service<Arm>::SharedPtr service_arm_;
 
     std::map<std::string, std::unique_ptr<CrazyflieROS>> crazyflies_;
 

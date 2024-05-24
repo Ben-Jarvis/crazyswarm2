@@ -15,7 +15,7 @@ from collections import defaultdict
 
 
 from crazyflie_interfaces.msg import FullState, Position, Status, TrajectoryPolynomialPiece
-from crazyflie_interfaces.srv import Arm, GoTo, Land,\
+from crazyflie_interfaces.srv import GoTo, Land,\
     NotifySetpointsStop, StartTrajectory, Takeoff, UploadTrajectory
 from geometry_msgs.msg import Point
 import numpy as np
@@ -133,9 +133,9 @@ class Crazyflie:
         self.notifySetpointsStopService = node.create_client(
             NotifySetpointsStop, prefix + '/notify_setpoints_stop')
         self.notifySetpointsStopService.wait_for_service()
-        self.armService = node.create_client(
-            Arm, prefix + '/arm')
-        # self.armService.wait_for_service()
+        # self.armService = node.create_client(
+        #     Arm, prefix + '/arm')
+        # # self.armService.wait_for_service()
         self.setParamsService = node.create_client(
             SetParameters, '/crazyflie_server/set_parameters')
         self.setParamsService.wait_for_service()
@@ -469,20 +469,20 @@ class Crazyflie:
         req.group_mask = groupMask
         self.notifySetpointsStopService.call_async(req)
 
-    def arm(self, arm=True):
-        """
-        Arms the quadrotor.
+    # def arm(self, arm=True):
+    #     """
+    #     Arms the quadrotor.
 
-        For a brushless or Bolt-based drone the motors start spinning and flight
-        is enabled.
+    #     For a brushless or Bolt-based drone the motors start spinning and flight
+    #     is enabled.
 
-        Args:
-            arm (boolean): True if the motors should be armed, False otherwise.
+    #     Args:
+    #         arm (boolean): True if the motors should be armed, False otherwise.
 
-        """
-        req = Arm.Request()
-        req.arm = arm
-        self.armService.call_async(req)
+    #     """
+    #     req = Arm.Request()
+    #     req.arm = arm
+    #     self.armService.call_async(req)
 
     # def position(self):
     #     """Returns the last true position measurement from motion capture.
@@ -781,7 +781,7 @@ class CrazyflieServer(rclpy.node.Node):
         self.goToService.wait_for_service()
         self.startTrajectoryService = self.create_client(StartTrajectory, 'all/start_trajectory')
         self.startTrajectoryService.wait_for_service()
-        self.armService = self.create_client(Arm, 'all/arm')
+        # self.armService = self.create_client(Arm, 'all/arm')
         # self.armService.wait_for_service()
         self.setParamsService = self.create_client(
             SetParameters, '/crazyflie_server/set_parameters')
@@ -973,20 +973,20 @@ class CrazyflieServer(rclpy.node.Node):
         req.relative = relative
         self.startTrajectoryService.call_async(req)
 
-    def arm(self, arm=True):
-        """
-        Broadcasted arming.
+    # def arm(self, arm=True):
+    #     """
+    #     Broadcasted arming.
 
-        For a brushless or Bolt-based drone the motors start spinning and flight
-        is enabled.
+    #     For a brushless or Bolt-based drone the motors start spinning and flight
+    #     is enabled.
 
-        Args:
-            arm (boolean): True if the motors should be armed, False otherwise.
+    #     Args:
+    #         arm (boolean): True if the motors should be armed, False otherwise.
 
-        """
-        req = Arm.Request()
-        req.arm = arm
-        self.armService.call_async(req)
+    #     """
+    #     req = Arm.Request()
+    #     req.arm = arm
+    #     self.armService.call_async(req)
 
     def setParam(self, name, value):
         """Set parameter via broadcasts. See Crazyflie.setParam for details."""

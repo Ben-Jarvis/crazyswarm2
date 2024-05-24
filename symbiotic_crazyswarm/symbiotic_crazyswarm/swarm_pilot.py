@@ -11,6 +11,7 @@ from geometry_msgs.msg import Twist
 import os
 import yaml
 from ament_index_python.packages import get_package_share_directory
+from symbiotic_crazyswarm.viewing_metrics import compute_neihgborhood, get_viewing_dir
 
 
 class SwarmPilot(Node):
@@ -37,6 +38,15 @@ class SwarmPilot(Node):
                 self.cylinder_radius = obstacles['obstacles'][obstacle]['radius']
 
         ### END TODO
+        
+        # Reading parameters for neighbors selection and viewing metric
+        drone_params_path = os.path.join(get_package_share_directory('crazyflie'),'config','drone_metrics.yaml')
+        with open(drone_params_path, 'r') as ymlfile:
+            drone_params = yaml.safe_load(ymlfile)
+        
+        # Save drone params to class variables
+        self.neighbors_params = drone_params['neighbors']
+        self.viewing_params = drone_params['viewing']
 
         self.num_drones = len(robot_prefixes)
         self.num_obs = len(self.obstacle_positions)
@@ -160,6 +170,48 @@ class SwarmPilot(Node):
         
         return 1/r0 * self.get_neighbour_weight_der(r, r0, delta) * self.get_cohesion_intensity(r, d_ref, a, b, c) + self.get_neighbour_weight(r, r0, delta) * self.get_cohesion_intensity_der(r, d_ref, a, b, c)
      
+     
+    # Compute the angular velocity command to send to each drone using the desired viewing metric
+    def angular_input(self, drone_id, drone_pose, neighbour_poses):
+
+        # Send the drone towards the average yaw of it's neighbours
+        yaw_rate_coeff = 0.2
+        
+        # Initialize the angular velocity command
+        angular_command = np.zeros(3)
+        
+        if len(neighbour_poses) > 0:
+            # Apply noise to all other members
+            
+            # Get noisy neighborhood positions + index in swarm
+            neighbors = compute_neihgborhood(drone_id, drone_pose[0], np.array([neighbour_pose[0] for neighbour_pose in neighbour_poses]), **self.neighbors_params)
+            # Publish neighbor count
+            # msg = NeighborsInfo()
+            # msg.count = len(neighbors)
+            # self.__drone_neighbors_publishers[drone_id].publish(msg)
+            
+            # Get estimated viewing direction
+            if len(neighbors) == 0:
+                viewing_dir = None
+            else:
+                n_pos = np.array([n[1] for n in neighbors])
+                is_2d = np.std(np.concatenate([[drone_pose[0,2]], n_pos[:,2].flatten()])) < 0.01
+                #print(f"IS_2D: {is_2d}")
+                viewing_dir = get_viewing_dir(drone_pose[0], n_pos, **self.viewing_params, in_2d=is_2d)
+            
+            # Calculate yaw difference
+            yaw_diff = 0
+            if viewing_dir is not None:
+                yaw_des = np.arctan2(viewing_dir[1], viewing_dir[0])
+                drone_yaw = drone_pose[2][2]
+                yaw_diff = yaw_des - drone_yaw
+            
+            # # Compute the yaw_command
+            angular_command[2] = np.clip(yaw_diff * yaw_rate_coeff, -0.25, 0.25)
+    
+        # Return the angular velocity command
+        return angular_command
+     
     # Compute the olfati-saber swarm commands
     def olfati_saber_input(self, drone_pose, neighbour_poses, cylinder_poses):
         
@@ -168,7 +220,7 @@ class SwarmPilot(Node):
         drone_vel = drone_pose[1]
 
         # Get the neighbour positions for neighbours above the ground
-        neighbour_positions = [neighbour_pose[0] for neighbour_pose in neighbour_poses if neighbour_pose[0][2] > 0.1]
+        neighbour_positions = [neighbour_pose[0] for neighbour_pose in neighbour_poses if neighbour_pose[0][2] > 0.01]
         num_neighbours = len(neighbour_poses)
 
         # Define constants
@@ -284,13 +336,16 @@ class SwarmPilot(Node):
                 
                 # Compute the swarm commands
                 swarm_command = self.olfati_saber_input(drone_pose, neighbour_poses, cylinder_poses)  
+                
+                # Compute the angular velocity command
+                angular_command = self.angular_input(i, np.array(drone_pose), np.array(neighbour_poses))
 
                 # Publish the swarm commands
                 msg = Twist()
                 msg.linear.x = swarm_command[0]
                 msg.linear.y = swarm_command[1]
                 msg.linear.z = swarm_command[2]
-                msg.angular.z = self.cmd_vel.angular.z
+                msg.angular.z = angular_command[2] #self.cmd_vel.angular.z
                 self.swarm_command_publishers[i].publish(msg)          
 
 

@@ -1,0 +1,9 @@
+neighbors:
+  metric: 'topological'                      # ['topological', 'eucledian', 'voronoi', 'vlos']
+  count: 2                            # For topological: how many neighbors
+  range: 0.5                          # Sensing range (radius) of the drone
+  r_agent: 0.069                      # Radius of an agent (for vlos neighbor metric)
+
+viewing:
+  metric: 'average'                # ['average', 'tangent_plane', 'convex_hull']
+  faces: 'adjacent'                   # For convex hull algo only: ['adjacent', 'visible']
