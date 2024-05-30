@@ -293,18 +293,20 @@ class SwarmUtils(Node):
 
     # Create a step function to publish the assigned poses
     def step(self):
+        try:
+            # Get the average position of the swarm
+            avg_pos = self.get_average_pos()
+            
+            # Get the average yaw of the swarm
+            avg_yaw = self.get_average_yaw()
 
-        # Get the average position of the swarm
-        avg_pos = self.get_average_pos()
-        
-        # Get the average yaw of the swarm
-        avg_yaw = self.get_average_yaw()
+            # Assign the drones to their positions in the swarm
+            self.assign_pos_simple(avg_pos, avg_yaw)
 
-        # Assign the drones to their positions in the swarm
-        self.assign_pos_simple(avg_pos, avg_yaw)
-
-        # Publish the assigned poses
-        self.assigned_poses_pub.publish(self.assigned_poses)  
+            # Publish the assigned poses
+            self.assigned_poses_pub.publish(self.assigned_poses)  
+        except IndexError:
+            pass
 
 def main(args=None):
     rclpy.init(args=args)

@@ -32,8 +32,8 @@ class RCPilot(Node):
 
             # Initialize params
             self.button_press = False
-            self.separation_range = 0.3
-            self.center_ang_x = 1.2
+            self.separation_range = 0.2
+            self.center_ang_x = 1.4
             self.current_ang_x = self.center_ang_x
             self.next_ang_x = self.center_ang_x
             self.alpha = 0.01

@@ -243,7 +243,7 @@ class SwarmPilot(Node):
 
         # Get the refence velocity and direction from the cmd_vel topic and rotate to the global reference frame
         v_ref = [self.cmd_vel.linear.x, self.cmd_vel.linear.y, self.cmd_vel.linear.z]   #self.__cmd_vel.linear.z] could change max vel here
-        # v_ref = self.rot_body2global(v_ref, drone_pose[2][2])
+        v_ref = self.rot_global2body(v_ref, drone_pose[2][2])
         
 
         # Normalize the reference velocity
@@ -305,7 +305,7 @@ class SwarmPilot(Node):
         # Remove the z component of the cohesion and obstacle command
         acc_coh[2] = 0
         acc_obs[2] = 0        
-        acc_command = acc_vel + acc_coh + acc_obs
+        acc_command = acc_vel + 0.2*acc_coh + acc_obs
 
         velocity_command = acc_command * self.dt
 
@@ -345,7 +345,7 @@ class SwarmPilot(Node):
                 msg.linear.x = swarm_command[0]
                 msg.linear.y = swarm_command[1]
                 msg.linear.z = swarm_command[2]
-                msg.angular.z = angular_command[2] #self.cmd_vel.angular.z
+                msg.angular.z = angular_command[2] #angular_command[2] #self.cmd_vel.angular.z
                 self.swarm_command_publishers[i].publish(msg)          
 
 

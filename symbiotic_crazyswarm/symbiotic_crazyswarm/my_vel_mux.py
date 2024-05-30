@@ -59,7 +59,7 @@ class VelMux(Node):
 
         self.hover_commands = [Hover() for _ in range(self.num_drones)]
 
-        self.max_speed = 0.8
+        self.max_speed = 0.5
         
 
     def cmd_vel_callback(self, msg):
@@ -85,7 +85,7 @@ class VelMux(Node):
             # set the z_distance to the hover height
             for idx, hover_publisher in enumerate(self.publisher_hovers):
                 self.hover_commands[idx].z_distance = self.hover_height
-            time.sleep(5.0)
+            time.sleep(4.0)
 
         if self.received_first_cmd_vel and self.cfs_have_taken_off:
             if self.msg_cmd_vel.linear.z >= -0.5:
@@ -101,6 +101,7 @@ class VelMux(Node):
                     # msg.vy = self.msg_cmd_vel.linear.y
                     # msg.yaw_rate = self.msg_cmd_vel.angular.z
                     # msg.z_distance = self.hover_height
+                    
                     
                     # Add the swarm commands to the hover commands
                     msg.vx += self.swarm_commands[idx].linear.x

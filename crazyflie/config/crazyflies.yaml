@@ -1,4 +1,4 @@
-# named list of all robots
+#named list of all robots
 robots:
   cf01:
     enabled: true
@@ -15,15 +15,25 @@ robots:
     uri: radio://1/70/2M/E7E7E7E705
     initial_position: [4.63, -0.89, 0.07] 
     type: cf21
-  # cf06:
-  #   enabled: true
-  #   uri: radio://2/90/2M/E7E7E7E706
-  #   initial_position: [4.86, -1.79, 0.07]
-  #   type: cf21
+  cf06:
+    enabled: true
+    uri: radio://2/90/2M/E7E7E7E706
+    initial_position: [2.63, -1.63, 0.07]
+    type: cf21
   cf09:
     enabled: true
-    uri: radio://2/100/2M/E7E7E7E709
-    initial_position: [4.07, -2.37, 0.07]
+    uri: radio://3/100/2M/E7E7E7E709
+    initial_position: [3.72, -2.57, 0.07]
+    type: cf21
+  cf10:
+    enabled: true
+    uri: radio://0/80/2M/E7E7E7E70A
+    initial_position: [4.45, -2.57, 0.07]
+    type: cf21
+  cf14:
+    enabled: true
+    uri: radio://0/80/2M/E7E7E7E70E
+    initial_position: [4.12, -1.80, 0.07] 
     type: cf21
 
 # Definition of the various robot types
